@@ -1,9 +1,9 @@
-#Text Plagiarism Detector
-#Overview
+# Text Plagiarism Detector
+## Overview
 
 The Text Plagiarism Detector is a Python-based tool that detects potential plagiarism in text and code documents. It computes similarity scores between submissions and a reference corpus, cross-compares submissions for collusion, and generates a clean HTML report highlighting plagiarized content.
 
-#Features
+## Features
 
 Supports .txt, .docx, and .pdf files.
 
@@ -19,7 +19,7 @@ Cross-submission collusion detection.
 
 Generates a highlighted HTML report showing plagiarized text, similarity scores, and references.
 
-#Installation
+## Installation
 
 Requires Python 3.9+ and the following libraries:
 
@@ -34,7 +34,7 @@ python cli.py --submissions <path_to_submissions_folder> \
               --ngram-size 5 \
               --out report.html
 
-#Parameters
+## Parameters
 
 --submissions: Folder containing student submission files.
 
@@ -48,7 +48,7 @@ python cli.py --submissions <path_to_submissions_folder> \
 
 --out: Path for saving the HTML report.
 
-#Output
+## Output
 
 HTML report with:
 
@@ -62,12 +62,12 @@ Highlighted plagiarized text
 
 Collusion detection results for submissions exceeding threshold.
 
-Limitations
+## Limitations
 
-Cannot fully detect deep paraphrasing or translations.
+- Cannot fully detect deep paraphrasing or translations.
 
-PDF extraction may fail for scanned/image-only PDFs.
+- PDF extraction may fail for scanned/image-only PDFs.
 
-MinHash/LSH may miss very low similarity cases.
+- MinHash/LSH may miss very low similarity cases.
 
-Advanced code obfuscation may not be detected by AST analysis.
+- Advanced code obfuscation may not be detected by AST analysis.
