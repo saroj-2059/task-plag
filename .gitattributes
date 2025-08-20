@@ -1,0 +1,3 @@
+# Exclude generated HTML reports from GitHub Linguist language stats
+report.html linguist-generated=true
+reports/*.html linguist-generated=true
