@@ -1,4 +1,3 @@
-# tests/test_detector.py
 from detector import detect_plagiarism
 
 def test_basic_match():

@@ -1,4 +1,3 @@
-# tests/test_explain.py
 from explain import shared_ngrams
 
 def test_shared():

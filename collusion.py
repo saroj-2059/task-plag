@@ -1,4 +1,3 @@
-# collusion.py
 from typing import List, Tuple
 from features import paragraphs, normalize_text, build_tfidf, cosine_sim_matrix
 
@@ -7,9 +6,8 @@ def collusion_pairs(submissions: List[str], min_score: float = 0.3) -> List[Tupl
     Detect collusion between submissions at a paragraph level.
     Returns list of tuples: (submission_idx1, submission_idx2, similarity_score)
     """
-    # Split each submission into paragraphs and normalize
     all_paragraphs = []
-    submission_para_indices = []  # track which submission each paragraph belongs to
+    submission_para_indices = [] 
     for idx, text in enumerate(submissions):
         paras = paragraphs(text)
         norm_paras = [normalize_text(p) for p in paras if p.strip()]
@@ -19,12 +17,9 @@ def collusion_pairs(submissions: List[str], min_score: float = 0.3) -> List[Tupl
     if not all_paragraphs:
         return []
 
-    # Build TF-IDF vectors for all paragraphs
     vec, X = build_tfidf(all_paragraphs)
-    # Compute cosine similarity between all paragraphs
     S = cosine_sim_matrix(X, X)
 
-    # Aggregate similarities between submissions
     n = len(submissions)
     scores = [[0.0]*n for _ in range(n)]
     counts = [[0]*n for _ in range(n)]
@@ -38,7 +33,6 @@ def collusion_pairs(submissions: List[str], min_score: float = 0.3) -> List[Tupl
                 scores[sub_i][sub_j] += S[i,j]
                 counts[sub_i][sub_j] += 1
 
-    # Compute average paragraph similarity and collect pairs above threshold
     out = []
     for i in range(n):
         for j in range(i+1, n):

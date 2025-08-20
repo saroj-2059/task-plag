@@ -1,4 +1,3 @@
-# explain.py
 from typing import List, Tuple
 from collections import Counter
 from features import normalize_text, tokenize, ngram_shingles

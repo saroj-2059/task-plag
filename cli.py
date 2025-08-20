@@ -1,7 +1,7 @@
 import os
 import glob
 import argparse
-import fitz  # PyMuPDF for PDF
+import fitz
 import docx2txt
 import webbrowser
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -11,10 +11,8 @@ from html import escape
 import spacy
 import ast
 
-# Initialize NLP
 nlp = spacy.load("en_core_web_sm")
 
-# ----------------- File Reading -----------------
 def read_file(path):
     ext = os.path.splitext(path)[1].lower()
     if ext == ".txt":
@@ -28,28 +26,23 @@ def read_file(path):
     else:
         return ""
 
-# ----------------- Preprocessing -----------------
 def preprocess_text(text):
     doc = nlp(text)
-    # Lemmatization + lowercase
     cleaned = " ".join(token.lemma_.lower() for token in doc if not token.is_punct and not token.is_space)
     return cleaned
 
 def extract_python_code(text):
-    # Simple extraction using AST
     try:
         tree = ast.parse(text)
         return ast.unparse(tree)
     except Exception:
         return text
 
-# ----------------- TF-IDF Similarity -----------------
 def similarity_score(text1, text2, ngram_range=(1,5)):
     vectorizer = TfidfVectorizer(analyzer='word', ngram_range=ngram_range)
     tfidf = vectorizer.fit_transform([text1, text2])
     return cosine_similarity(tfidf[0:1], tfidf[1:2])[0][0]
 
-# ----------------- Highlight -----------------
 def highlight_text(query, reference):
     query_words = set(query.lower().split())
     reference_words = reference.split()
@@ -57,7 +50,6 @@ def highlight_text(query, reference):
                    for word in reference_words]
     return " ".join(highlighted)
 
-# ----------------- MinHash + LSH -----------------
 def get_minhash(text, num_perm=128, ngram_size=5):
     shingles = [text[i:i+ngram_size] for i in range(len(text)-ngram_size+1)]
     m = MinHash(num_perm=num_perm)
@@ -75,7 +67,6 @@ def build_lsh_index(references, threshold=0.3, num_perm=128, ngram_size=5):
     return lsh, ref_minhashes
 
 def detect_plagiarism(submissions, references, topk=5, min_score=0.0, ngram_size=5):
-    # Preprocess references
     refs_processed = {k: preprocess_text(v) for k,v in references.items()}
     subs_processed = {k: preprocess_text(v) for k,v in submissions.items()}
 
@@ -93,7 +84,6 @@ def detect_plagiarism(submissions, references, topk=5, min_score=0.0, ngram_size
         results[sub_name] = scores[:topk]
     return results
 
-# ----------------- Collusion Detection -----------------
 def detect_collusion(submissions, min_score=0.0, ngram_size=5):
     collusion = []
     sub_items = list(submissions.items())
@@ -107,7 +97,6 @@ def detect_collusion(submissions, min_score=0.0, ngram_size=5):
                 collusion.append((s1_name, s2_name, score))
     return collusion
 
-# ----------------- Report Generation -----------------
 def generate_report(plag_results, collusion_results, out_file):
     html = ["<html><head><title>Plagiarism Report</title>"
             "<style>body{font-family:Arial;} table{border-collapse:collapse;} td,th{padding:5px;border:1px solid #ddd;} mark{background-color:yellow;}</style>"
@@ -137,7 +126,6 @@ def generate_report(plag_results, collusion_results, out_file):
     print(f"Report saved to {out_file}")
     webbrowser.open(f"file://{os.path.abspath(out_file)}")
 
-# ----------------- CLI -----------------
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--submissions", required=True, help="Folder with submission files")
@@ -148,14 +136,12 @@ def main():
     parser.add_argument("--out", default="report.html")
     args = parser.parse_args()
 
-    # Load submissions
     submissions = {}
     for path in glob.glob(os.path.join(args.submissions, "*")):
         text = read_file(path)
         if text.strip():
             submissions[os.path.basename(path)] = text
 
-    # Load references
     references = {}
     for path in glob.glob(args.refs):
         text = read_file(path)

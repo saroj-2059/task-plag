@@ -1,12 +1,7 @@
-# features.py
 import re
 import string
 import ast
 from typing import List, Tuple
-
-# =====================
-# Preprocessing & Tokenization
-# =====================
 
 _WORD_RE = re.compile(r"\b\w+\b", re.UNICODE)
 
@@ -47,9 +42,6 @@ def ngram_shingles(tokens: List[str], n: int = 3) -> List[Tuple[str,...]]:
         return []
     return [tuple(tokens[i:i+n]) for i in range(len(tokens)-n+1)]
 
-# =====================
-# TF-IDF & Similarity
-# =====================
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
